@@ -9,14 +9,19 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-//Test Endpoint
-app.get('/', (req, res) => {
-    res.json({message: 'TaskFlow API is working'});
+const authRoutes = require('./routes/auth.routes');
+
+
+app.use('/api/auth', authRoutes);
+
+//Bu endpoint sunucunun ayakta olup olmadigini kontrol etmek icin 
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>{ 
-    console.log(`Server ${PORT} portunda calisiyor`);
+    console.log(`Sunucu calisiyor: http://localhost:${PORT} `);
 });
 
 module.exports = app;
