@@ -25,26 +25,33 @@ const getProjects = async (userId) => {
 };
 
 const createProject = async (userId, {name, description}) => {
-
-    return await prisma.$transaction(async (tx) =>{
-        const project = await tx.project.create({
-            data: {
-                name,
-                description,
-                ownerId: userId,
-            }
-        });
-
-        await tx.projectMember.create({
-            data: {
-                projectId: project.id,
-                userId,
-                role: 'ADMIN'
-            }
-        });
-
-        return project;
+  return await prisma.$transaction(async (tx) => {
+    const project = await tx.project.create({
+      data: {
+        name,
+        description,
+        ownerId: userId,
+      },
+      include: {
+        owner: {
+          select: { id: true, name: true, email: true }
+        },
+        _count: {
+          select: { members: true, tasks: true }
+        }
+      }
     });
+
+    await tx.projectMember.create({
+      data: {
+        projectId: project.id,
+        userId,
+        role: 'ADMIN'
+      }
+    });
+
+    return project;
+  });
 };
 
 const getProjectById = async(projectId, userId) =>{

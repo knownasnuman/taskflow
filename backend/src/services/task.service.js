@@ -37,7 +37,7 @@ const getTasks = async (projectId, userId) =>{
 
 //gorev olusturma
 
-const createTask = async (projcetId, userId, { title, description, status, priority, dueDate, assigneeId}) => {
+const createTask = async (projectId, userId, { title, description, status, priority, dueDate, assigneeId}) => {
 
     const member = await prisma.projectMember.findUnique({
         where: {
@@ -56,7 +56,7 @@ const createTask = async (projcetId, userId, { title, description, status, prior
             title,
             description,
             status: status || 'TODO',
-            priorit: priority || 'MEDIUM',
+            priority: priority || 'MEDIUM',
             dueDate: dueDate ? new Date(dueDate) : null,
             projectId,
             createdById: userId,
