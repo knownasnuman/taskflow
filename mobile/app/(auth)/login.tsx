@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import useAuthStore from '../../store/auth.store';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {
   // Local state — sadece bu ekrana ait veriler
@@ -44,7 +45,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView  style={styles.container}>
       <Text style={styles.title}>TaskFlow</Text>
       <Text style={styles.subtitle}>Hesabına giriş yap</Text>
 
@@ -87,7 +88,7 @@ export default function LoginScreen() {
           Hesabın yok mu? <Text style={styles.linkBold}>Kayıt ol</Text>
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 

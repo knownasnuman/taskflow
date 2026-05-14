@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import api from '../../../services/api';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MembersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -67,7 +68,7 @@ export default function MembersScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView  style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.backText}>← Geri</Text>
@@ -157,7 +158,7 @@ export default function MembersScreen() {
           />
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -1,12 +1,12 @@
-import { create } from 'zustand';
-import api from '../services/api';
+import { create } from "zustand";
+import api from "../services/api";
 
 interface Task {
   id: string;
   title: string;
   description: string | null;
-  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
-  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+  status: "TODO" | "IN_PROGRESS" | "DONE";
+  priority: "LOW" | "MEDIUM" | "HIGH";
   dueDate: string | null;
   createdAt: string;
   assignee: {
@@ -25,16 +25,24 @@ interface TaskState {
   isLoading: boolean;
 
   getTasks: (projectId: string) => Promise<void>;
-  createTask: (projectId: string, data: {
-    title: string;
-    description?: string;
-    status?: string;
-    priority?: string;
-    dueDate?: string;
-    assigneeId?: string;
-  }) => Promise<void>;
-  updateTask: (projectId: string, taskId: string, data: Partial<Task>) => Promise<void>;
+  createTask: (
+    projectId: string,
+    data: {
+      title: string;
+      description?: string;
+      status?: string;
+      priority?: string;
+      dueDate?: string;
+      assigneeId?: string;
+    },
+  ) => Promise<void>;
+  updateTask: (
+    projectId: string,
+    taskId: string,
+    data: Partial<Task>,
+  ) => Promise<void>;
   deleteTask: (projectId: string, taskId: string) => Promise<void>;
+  updateTaskLocally: (task: Task) => void;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
@@ -71,12 +79,12 @@ const useTaskStore = create<TaskState>((set) => ({
     try {
       const response = await api.put(
         `/api/projects/${projectId}/tasks/${taskId}`,
-        data
+        data,
       );
 
       set((state) => ({
         tasks: state.tasks.map((t) =>
-          t.id === taskId ? response.data.task : t
+          t.id === taskId ? response.data.task : t,
         ),
       }));
     } catch (error) {
@@ -94,6 +102,11 @@ const useTaskStore = create<TaskState>((set) => ({
     } catch (error) {
       throw error;
     }
+  },
+  updateTaskLocally: (task) => {
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t.id === task.id ? task : t)),
+    }));
   },
 }));
 

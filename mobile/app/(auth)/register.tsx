@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import useAuthStore from '../../store/auth.store';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -49,7 +50,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView  style={styles.container}>
       <Text style={styles.title}>TaskFlow</Text>
       <Text style={styles.subtitle}>Yeni hesap oluştur</Text>
 
@@ -102,7 +103,7 @@ export default function RegisterScreen() {
           Zaten hesabın var mı? <Text style={styles.linkBold}>Giriş yap</Text>
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 

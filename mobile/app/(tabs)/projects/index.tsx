@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import useProjectStore from '../../../store/project.store';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProjectsScreen() {
   const { projects, isLoading, getProjects, deleteProject } = useProjectStore();
@@ -82,7 +83,7 @@ export default function ProjectsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView  style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Projeler</Text>
         <TouchableOpacity
@@ -112,7 +113,7 @@ export default function ProjectsScreen() {
           refreshing={isLoading}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

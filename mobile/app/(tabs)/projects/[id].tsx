@@ -14,6 +14,14 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import useProjectStore from "../../../store/project.store";
 import useTaskStore from "../../../store/task.store";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  connectSocket,
+  joinProject,
+  leaveProject,
+  onTaskUpdated,
+  offTaskUpdated,
+} from "../../../services/socket";
 
 // Görev durumları — kanban sütunları
 const COLUMNS = [
@@ -45,6 +53,28 @@ export default function ProjectDetailScreen() {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (!id) return;
+
+    // Socket bağlan ve odaya katıl
+    const setupSocket = async () => {
+      await connectSocket();
+      joinProject(id);
+
+      // Başka biri görevi güncellediğinde store'u güncelle
+      onTaskUpdated((updatedTask) => {
+        useTaskStore.getState().updateTaskLocally(updatedTask);
+      });
+    };
+
+    setupSocket();
+
+    // Ekrandan çıkınca temizle
+    return () => {
+      leaveProject(id);
+      offTaskUpdated();
+    };
+  }, [id]);
   // Görevi duruma göre filtrele — her sütun kendi görevlerini gösterir
   const getTasksByStatus = (status: string) => {
     return tasks.filter((t) => t.status === status);
@@ -118,7 +148,7 @@ export default function ProjectDetailScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -323,7 +353,7 @@ export default function ProjectDetailScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

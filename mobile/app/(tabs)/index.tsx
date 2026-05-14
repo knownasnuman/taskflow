@@ -2,12 +2,13 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import useAuthStore from '../../store/auth.store';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const { user, logout } = useAuthStore();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView  style={styles.container}>
       <Text style={styles.title}>Hoş geldin!</Text>
       <Text style={styles.name}>{user?.name}</Text>
       <Text style={styles.email}>{user?.email}</Text>
@@ -22,7 +23,7 @@ export default function HomeScreen() {
       <TouchableOpacity style={styles.button} onPress={logout}>
         <Text style={styles.buttonText}>Çıkış Yap</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
