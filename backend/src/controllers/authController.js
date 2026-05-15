@@ -100,4 +100,23 @@ const me = async (req, res) => {
   }
 };
 
-module.exports = { register, login, me };
+const refresh = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({ error: 'Refresh token zorunludur' });
+    }
+
+    const result = await authService.refreshToken(refreshToken);
+    return res.status(200).json(result);
+
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+    return res.status(500).json({ error: 'Sunucu hatası' });
+  }
+};
+
+module.exports = { register, login, me, refresh };

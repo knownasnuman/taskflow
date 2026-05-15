@@ -22,6 +22,17 @@ const generateRefreshToken = (userId) => {
     );
 };
 
+const refreshToken = async (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const accessToken = generateAccessToken(decoded.userId, decoded.email);
+    return { accessToken };
+  } catch (error) {
+    const err = new Error('Geçersiz refresh token');
+    err.statusCode = 401;
+    throw err;
+  }
+};
 
 //REGISTER
 
@@ -100,7 +111,7 @@ const login = async ({email, password}) => {
     };
 };
 
-module.exports = { register, login};
+module.exports = { register, login, refreshToken };
 
 
 
