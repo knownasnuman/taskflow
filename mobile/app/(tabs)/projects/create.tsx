@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import useProjectStore from '../../../store/project.store';
-
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function CreateProjectScreen() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

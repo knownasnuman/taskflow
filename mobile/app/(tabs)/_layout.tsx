@@ -8,6 +8,8 @@ export default function TabsLayout() {
       <Stack.Screen name="projects/create" />
       <Stack.Screen name="projects/[id]" />
       <Stack.Screen name="projects/members" />
+      <Stack.Screen name="projects/edit-task" />
+      <Stack.Screen name="profile" />
     </Stack>
   );
 }

@@ -1,6 +1,6 @@
 // mobile/store/project.store.ts
-import { create } from 'zustand';
-import api from '../services/api';
+import { create } from "zustand";
+import api from "../services/api";
 
 interface Project {
   id: string;
@@ -37,18 +37,20 @@ const useProjectStore = create<ProjectState>((set) => ({
   getProjects: async () => {
     set({ isLoading: true });
     try {
-      const response = await api.get('/api/projects');
+      const response = await api.get("/api/projects");
       set({ projects: response.data.projects, isLoading: false });
-    } catch (error) {
+    } catch (error: any) {
       set({ isLoading: false });
-      throw error;
+
+      const message = error.response?.data?.error || "Projeler yüklenemedi";
+      throw new Error(message);
     }
   },
 
   createProject: async (name, description) => {
     set({ isLoading: true });
     try {
-      const response = await api.post('/api/projects', { name, description });
+      const response = await api.post("/api/projects", { name, description });
 
       set((state) => ({
         projects: [response.data.project, ...state.projects],

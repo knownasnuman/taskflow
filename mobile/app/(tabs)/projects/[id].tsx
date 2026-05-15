@@ -10,6 +10,7 @@ import {
   Alert,
   Modal,
   TextInput,
+  RefreshControl,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import useProjectStore from "../../../store/project.store";
@@ -22,6 +23,8 @@ import {
   onTaskUpdated,
   offTaskUpdated,
 } from "../../../services/socket";
+import api from "../../../services/api";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 // Görev durumları — kanban sütunları
 const COLUMNS = [
@@ -45,6 +48,14 @@ export default function ProjectDetailScreen() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
   const [newTaskPriority, setNewTaskPriority] = useState("MEDIUM");
+
+  const [newTaskAssigneeId, setNewTaskAssigneeId] = useState<string | null>(
+    null,
+  );
+  const [members, setMembers] = useState<any[]>([]);
+
+  const [newTaskDueDate, setNewTaskDueDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -75,6 +86,22 @@ export default function ProjectDetailScreen() {
       offTaskUpdated();
     };
   }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    // Proje üyelerini çek — assignee seçimi için
+    const fetchMembers = async () => {
+      try {
+        const response = await api.get(`/api/projects/${id}`);
+        setMembers(response.data.project.members);
+      } catch (error) {
+        console.log("Üyeler getirilemedi:", error);
+      }
+    };
+
+    fetchMembers();
+  }, [id]);
   // Görevi duruma göre filtrele — her sütun kendi görevlerini gösterir
   const getTasksByStatus = (status: string) => {
     return tasks.filter((t) => t.status === status);
@@ -92,13 +119,17 @@ export default function ProjectDetailScreen() {
         description: newTaskDescription.trim() || undefined,
         priority: newTaskPriority,
         status: "TODO",
+        assigneeId: newTaskAssigneeId || undefined,
+        dueDate: newTaskDueDate ? newTaskDueDate.toISOString() : undefined,
       });
 
       // Formu sıfırla ve modalı kapat
       setNewTaskTitle("");
       setNewTaskDescription("");
       setNewTaskPriority("MEDIUM");
+      setNewTaskAssigneeId(null);
       setCreateModalVisible(false);
+      setNewTaskDueDate(null);
     } catch (error: any) {
       console.log("Create task error:", JSON.stringify(error.response?.data));
       console.log("Error message:", error.message);
@@ -172,7 +203,20 @@ export default function ProjectDetailScreen() {
       </View>
 
       {/* Kanban Board — yatay scroll */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => {
+              getProjectById(id);
+              getTasks(id);
+            }}
+            colors={["#6366f1"]}
+          />
+        }
+      >
         <View style={styles.board}>
           {COLUMNS.map((column) => (
             <View key={column.key} style={styles.column}>
@@ -215,8 +259,47 @@ export default function ProjectDetailScreen() {
                         👤 {task.assignee.name}
                       </Text>
                     )}
+                    {task.dueDate && (
+                      <Text style={styles.dueDate}>
+                        📅 {new Date(task.dueDate).toLocaleDateString("tr-TR")}
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 ))}
+
+                {/* Due Date */}
+                <Text style={styles.modalLabel}>Bitiş Tarihi</Text>
+                <TouchableOpacity
+                  style={styles.dateButton}
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Text style={styles.dateButtonText}>
+                    {newTaskDueDate
+                      ? newTaskDueDate.toLocaleDateString("tr-TR")
+                      : "Tarih seç"}
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Seçilen tarihi temizle */}
+                {newTaskDueDate && (
+                  <TouchableOpacity onPress={() => setNewTaskDueDate(null)}>
+                    <Text style={styles.clearDate}>Tarihi Temizle</Text>
+                  </TouchableOpacity>
+                )}
+
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={newTaskDueDate || new Date()}
+                    mode="date"
+                    minimumDate={new Date()} // Geçmiş tarih seçilemesin
+                    onChange={(event, date) => {
+                      setShowDatePicker(false);
+                      if (event.type === "set" && date) {
+                        setNewTaskDueDate(date);
+                      }
+                    }}
+                  />
+                )}
 
                 {/* Sütun boşsa mesaj göster */}
                 {getTasksByStatus(column.key).length === 0 && (
@@ -280,6 +363,46 @@ export default function ProjectDetailScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+
+            {/* Assignee Seçimi */}
+            <Text style={styles.modalLabel}>Atanacak Kişi</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.assigneeRow}>
+                {/* Kimseye atama seçeneği */}
+                <TouchableOpacity
+                  style={[
+                    styles.assigneeButton,
+                    !newTaskAssigneeId && styles.assigneeButtonActive,
+                  ]}
+                  onPress={() => setNewTaskAssigneeId(null)}
+                >
+                  <Text style={styles.assigneeText}>Yok</Text>
+                </TouchableOpacity>
+
+                {members.map((member) => (
+                  <TouchableOpacity
+                    key={member.user.id}
+                    style={[
+                      styles.assigneeButton,
+                      newTaskAssigneeId === member.user.id &&
+                        styles.assigneeButtonActive,
+                    ]}
+                    onPress={() => setNewTaskAssigneeId(member.user.id)}
+                  >
+                    <Text
+                      style={[
+                        styles.assigneeText,
+                        newTaskAssigneeId === member.user.id && {
+                          color: "#fff",
+                        },
+                      ]}
+                    >
+                      {member.user.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
 
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -348,6 +471,27 @@ export default function ProjectDetailScreen() {
                 onPress={() => setDetailModalVisible(false)}
               >
                 <Text style={styles.cancelText}>Kapat</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => {
+                  setDetailModalVisible(false);
+                  router.push({
+                    pathname: "/(tabs)/projects/edit-task",
+                    params: {
+                      projectId: id,
+                      taskId: selectedTask.id,
+                      title: selectedTask.title,
+                      description: selectedTask.description || "",
+                      priority: selectedTask.priority,
+                      status: selectedTask.status,
+                      assigneeId: selectedTask.assignee?.id || "",
+                      dueDate: selectedTask.dueDate || "",
+                    },
+                  });
+                }}
+              >
+                <Text style={styles.editText}>Düzenle</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -517,4 +661,56 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   membersButtonText: { fontSize: 16 },
+  editButton: {
+    flex: 1,
+    backgroundColor: "#e0e7ff",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  editText: { color: "#6366f1", fontWeight: "600" },
+  assigneeRow: {
+    flexDirection: "row",
+    gap: 8,
+    paddingVertical: 4,
+  },
+  assigneeButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    backgroundColor: "#fff",
+  },
+  assigneeButtonActive: {
+    backgroundColor: "#6366f1",
+    borderColor: "#6366f1",
+  },
+  assigneeText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#374151",
+  },
+  dateButton: {
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: "#fff",
+  },
+  dateButtonText: {
+    fontSize: 15,
+    color: "#374151",
+  },
+  clearDate: {
+    color: "#ef4444",
+    fontSize: 13,
+    textAlign: "right",
+    marginTop: 4,
+  },
+  dueDate: {
+    fontSize: 11,
+    color: "#6366f1",
+    marginTop: 4,
+  },
 });

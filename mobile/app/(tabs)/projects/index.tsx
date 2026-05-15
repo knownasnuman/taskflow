@@ -1,5 +1,5 @@
 // mobile/app/(tabs)/projects/index.tsx
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,38 +8,45 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-} from 'react-native';
-import { router } from 'expo-router';
-import useProjectStore from '../../../store/project.store';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { router } from "expo-router";
+import useProjectStore from "../../../store/project.store";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProjectsScreen() {
   const { projects, isLoading, getProjects, deleteProject } = useProjectStore();
 
   // Ekran açılınca projeleri çek
   useEffect(() => {
-    getProjects();
+    const loadProjects = async () => {
+      try {
+        await getProjects();
+      } catch (error: any) {
+        Alert.alert("Hata", error.message || "Projeler yüklenemedi");
+      }
+    };
+    loadProjects();
   }, []);
 
   const handleDelete = (id: string, name: string) => {
     // Silmeden önce kullanıcıya sor
     Alert.alert(
-      'Projeyi Sil',
+      "Projeyi Sil",
       `"${name}" projesini silmek istediğine emin misin?`,
       [
-        { text: 'İptal', style: 'cancel' },
+        { text: "İptal", style: "cancel" },
         {
-          text: 'Sil',
-          style: 'destructive',
+          text: "Sil",
+          style: "destructive",
           onPress: async () => {
             try {
               await deleteProject(id);
             } catch (error) {
-              Alert.alert('Hata', 'Proje silinemedi');
+              Alert.alert("Hata", "Proje silinemedi");
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     );
   };
 
@@ -83,24 +90,30 @@ export default function ProjectsScreen() {
   }
 
   return (
-    <SafeAreaView  style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Projeler</Text>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => router.push('/(tabs)/projects/create')}
+          onPress={() => router.push("/(tabs)/projects/create")}
         >
           <Text style={styles.addButtonText}>+ Yeni</Text>
         </TouchableOpacity>
       </View>
 
       {projects.length === 0 ? (
-        // Hiç proje yoksa boş ekran göster
-        <View style={styles.center}>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyEmoji}>📋</Text>
           <Text style={styles.emptyText}>Henüz proje yok</Text>
           <Text style={styles.emptySubText}>
-            Yeni bir proje oluşturmak için + Yeni butonuna tıkla
+            İlk projenizi oluşturmak için + Yeni butonuna tıklayın
           </Text>
+          <TouchableOpacity
+            style={styles.emptyButton}
+            onPress={() => router.push("/(tabs)/projects/create")}
+          >
+            <Text style={styles.emptyButtonText}>+ Proje Oluştur</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <FlatList
@@ -120,97 +133,118 @@ export default function ProjectsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#111827',
+    fontWeight: "bold",
+    color: "#111827",
   },
   addButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: "#6366f1",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
   },
   addButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
+    fontWeight: "600",
   },
   list: {
     padding: 16,
     gap: 12,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   projectName: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     flex: 1,
   },
   deleteButton: {
-    backgroundColor: '#fee2e2',
+    backgroundColor: "#fee2e2",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 6,
   },
   deleteText: {
-    color: '#ef4444',
+    color: "#ef4444",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   description: {
-    color: '#6b7280',
+    color: "#6b7280",
     fontSize: 14,
     marginBottom: 12,
   },
   cardFooter: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   meta: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: "#9ca3af",
   },
   center: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#374151",
     marginBottom: 8,
   },
   emptySubText: {
     fontSize: 14,
-    color: '#9ca3af',
-    textAlign: 'center',
-    paddingHorizontal: 32,
+    color: "#9ca3af",
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  emptyEmoji: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  emptyButton: {
+    backgroundColor: "#6366f1",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  emptyButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
   },
 });

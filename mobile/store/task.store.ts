@@ -9,6 +9,7 @@ interface Task {
   priority: "LOW" | "MEDIUM" | "HIGH";
   dueDate: string | null;
   createdAt: string;
+  assigneeId?: string | null;
   assignee: {
     id: string;
     name: string;
@@ -54,9 +55,10 @@ const useTaskStore = create<TaskState>((set) => ({
     try {
       const response = await api.get(`/api/projects/${projectId}/tasks`);
       set({ tasks: response.data.tasks, isLoading: false });
-    } catch (error) {
+    } catch (error: any) {
       set({ isLoading: false });
-      throw error;
+      const message = error.response?.data?.error || "Projeler yüklenemedi";
+      throw new Error(message);
     }
   },
 
