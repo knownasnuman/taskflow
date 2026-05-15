@@ -25,6 +25,7 @@ import {
 } from "../../../services/socket";
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { TaskSkeleton } from '../../../components/SkeletonCard';
 
 // Görev durumları — kanban sütunları
 const COLUMNS = [
@@ -302,9 +303,14 @@ export default function ProjectDetailScreen() {
                 )}
 
                 {/* Sütun boşsa mesaj göster */}
-                {getTasksByStatus(column.key).length === 0 && (
+                {getTasksByStatus(column.key).length === 0 && isLoading ? (
+                  <>
+                    <TaskSkeleton />
+                    <TaskSkeleton />
+                  </>
+                ) : getTasksByStatus(column.key).length === 0 ? (
                   <Text style={styles.emptyColumn}>Görev yok</Text>
-                )}
+                ) : null}
               </ScrollView>
             </View>
           ))}

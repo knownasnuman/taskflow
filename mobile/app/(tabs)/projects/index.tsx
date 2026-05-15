@@ -12,6 +12,7 @@ import {
 import { router } from "expo-router";
 import useProjectStore from "../../../store/project.store";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ProjectSkeleton } from '../../../components/SkeletonCard';
 
 export default function ProjectsScreen() {
   const { projects, isLoading, getProjects, deleteProject } = useProjectStore();
@@ -65,6 +66,21 @@ export default function ProjectsScreen() {
         >
           <Text style={styles.deleteText}>Sil</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() =>
+            router.push({
+              pathname: "/(tabs)/projects/edit-project",
+              params: {
+                id: item.id,
+                name: item.name,
+                description: item.description || "",
+              },
+            })
+          }
+        >
+          <Text style={styles.editText}>Düzenle</Text>
+        </TouchableOpacity>
       </View>
 
       {item.description && (
@@ -81,13 +97,20 @@ export default function ProjectsScreen() {
     </TouchableOpacity>
   );
 
-  if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#6366f1" />
+  if (isLoading && projects.length === 0) {
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Projeler</Text>
       </View>
-    );
-  }
+      <View style={{ padding: 16 }}>
+        <ProjectSkeleton />
+        <ProjectSkeleton />
+        <ProjectSkeleton />
+      </View>
+    </View>
+  );
+}
 
   return (
     <SafeAreaView style={styles.container}>
@@ -246,5 +269,17 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 16,
+  },
+  editButton: {
+    backgroundColor: "#e0e7ff",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  editText: {
+    color: "#6366f1",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });

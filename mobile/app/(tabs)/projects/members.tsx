@@ -1,5 +1,5 @@
 // mobile/app/(tabs)/projects/members.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,15 +9,15 @@ import {
   Alert,
   FlatList,
   ActivityIndicator,
-} from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import api from '../../../services/api';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import api from "../../../services/api";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MembersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState('MEMBER');
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("MEMBER");
   const [members, setMembers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -33,7 +33,7 @@ export default function MembersScreen() {
       const response = await api.get(`/api/projects/${id}`);
       setMembers(response.data.project.members);
     } catch (error) {
-      Alert.alert('Hata', 'Üyeler getirilemedi');
+      Alert.alert("Hata", "Üyeler getirilemedi");
     } finally {
       setIsLoading(false);
     }
@@ -41,7 +41,7 @@ export default function MembersScreen() {
 
   const handleAddMember = async () => {
     if (!email.trim()) {
-      Alert.alert('Hata', 'Email zorunludur');
+      Alert.alert("Hata", "Email zorunludur");
       return;
     }
 
@@ -52,23 +52,47 @@ export default function MembersScreen() {
         role,
       });
 
-      Alert.alert('Başarılı', 'Üye eklendi');
-      setEmail('');
+      Alert.alert("Başarılı", "Üye eklendi");
+      setEmail("");
       fetchMembers(); // Listeyi yenile
     } catch (error: any) {
-      const message = error.response?.data?.error || 'Üye eklenemedi';
-      Alert.alert('Hata', message);
+      const message = error.response?.data?.error || "Üye eklenemedi";
+      Alert.alert("Hata", message);
     } finally {
       setIsAdding(false);
     }
   };
 
   const getRoleColor = (role: string) => {
-    return role === 'ADMIN' ? '#6366f1' : '#6b7280';
+    return role === "ADMIN" ? "#6366f1" : "#6b7280";
+  };
+
+  const handleRemoveMember = (memberId: string, memberName: string) => {
+    Alert.alert(
+      "Üyeyi Çıkar",
+      `${memberName} adlı üyeyi projeden çıkarmak istediğine emin misin?`,
+      [
+        { text: "İptal", style: "cancel" },
+        {
+          text: "Çıkar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.delete(`/api/projects/${id}/members/${memberId}`);
+              fetchMembers(); // Listeyi yenile
+              Alert.alert("Başarılı", "Üye çıkarıldı");
+            } catch (error: any) {
+              const message = error.response?.data?.error || "Üye çıkarılamadı";
+              Alert.alert("Hata", message);
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (
-    <SafeAreaView  style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Text style={styles.backText}>← Geri</Text>
@@ -92,13 +116,10 @@ export default function MembersScreen() {
         {/* Rol Seçimi */}
         <Text style={styles.label}>Rol</Text>
         <View style={styles.roleRow}>
-          {['MEMBER', 'ADMIN'].map((r) => (
+          {["MEMBER", "ADMIN"].map((r) => (
             <TouchableOpacity
               key={r}
-              style={[
-                styles.roleButton,
-                role === r && styles.roleButtonActive,
-              ]}
+              style={[styles.roleButton, role === r && styles.roleButtonActive]}
               onPress={() => setRole(r)}
             >
               <Text
@@ -142,13 +163,26 @@ export default function MembersScreen() {
                   <Text style={styles.memberName}>{item.user.name}</Text>
                   <Text style={styles.memberEmail}>{item.user.email}</Text>
                 </View>
-                <View
-                  style={[
-                    styles.roleBadge,
-                    { backgroundColor: getRoleColor(item.role) },
-                  ]}
-                >
-                  <Text style={styles.roleBadgeText}>{item.role}</Text>
+                <View style={styles.memberRight}>
+                  <View
+                    style={[
+                      styles.roleBadge,
+                      { backgroundColor: getRoleColor(item.role) },
+                    ]}
+                  >
+                    <Text style={styles.roleBadgeText}>{item.role}</Text>
+                  </View>
+                  {/* Proje sahibi çıkarılamaz */}
+                  {item.role !== "ADMIN" && (
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={() =>
+                        handleRemoveMember(item.user.id, item.user.name)
+                      }
+                    >
+                      <Text style={styles.removeText}>Çıkar</Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             )}
@@ -163,20 +197,20 @@ export default function MembersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: "#f9fafb" },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
-  backText: { color: '#6366f1', fontSize: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', color: '#111827' },
+  backText: { color: "#6366f1", fontSize: 16 },
+  title: { fontSize: 20, fontWeight: "bold", color: "#111827" },
   form: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     margin: 16,
     borderRadius: 12,
     padding: 16,
@@ -184,63 +218,79 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
   },
-  roleRow: { flexDirection: 'row', gap: 8 },
+  roleRow: { flexDirection: "row", gap: 8 },
   roleButton: {
     flex: 1,
     padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    alignItems: 'center',
+    borderColor: "#e5e7eb",
+    alignItems: "center",
   },
   roleButtonActive: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: "#6366f1",
+    borderColor: "#6366f1",
   },
-  roleButtonText: { fontWeight: '600', color: '#374151' },
-  roleButtonTextActive: { color: '#fff' },
+  roleButtonText: { fontWeight: "600", color: "#374151" },
+  roleButtonTextActive: { color: "#fff" },
   addButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: "#6366f1",
     padding: 14,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonDisabled: { opacity: 0.6 },
-  addButtonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  addButtonText: { color: "#fff", fontWeight: "600", fontSize: 16 },
   membersSection: { paddingHorizontal: 16 },
   memberCard: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 14,
     marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   memberInfo: { gap: 2 },
-  memberName: { fontSize: 15, fontWeight: '600', color: '#111827' },
-  memberEmail: { fontSize: 13, color: '#6b7280' },
+  memberName: { fontSize: 15, fontWeight: "600", color: "#111827" },
+  memberEmail: { fontSize: 13, color: "#6b7280" },
   roleBadge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
   },
-  roleBadgeText: { color: '#fff', fontSize: 12, fontWeight: '600' },
-  emptyText: { color: '#9ca3af', textAlign: 'center', padding: 16 },
+  roleBadgeText: { color: "#fff", fontSize: 12, fontWeight: "600" },
+  emptyText: { color: "#9ca3af", textAlign: "center", padding: 16 },
+  memberRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  removeButton: {
+    backgroundColor: "#fee2e2",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  removeText: {
+    color: "#ef4444",
+    fontSize: 12,
+    fontWeight: "600",
+  },
 });

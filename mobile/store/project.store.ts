@@ -22,6 +22,7 @@ interface ProjectState {
   projects: Project[];
   currentProject: any | null;
   isLoading: boolean;
+  updateProject: (id: string, data: { name: string; description?: string }) => Promise<void>;
 
   getProjects: () => Promise<void>;
   createProject: (name: string, description?: string) => Promise<void>;
@@ -84,6 +85,20 @@ const useProjectStore = create<ProjectState>((set) => ({
       throw error;
     }
   },
+
+  updateProject: async (id, data) => {
+  try {
+    const response = await api.put(`/api/projects/${id}`, data);
+
+    set((state) => ({
+      projects: state.projects.map((p) =>
+        p.id === id ? response.data.project : p
+      ),
+    }));
+  } catch (error) {
+    throw error;
+  }
+},
 }));
 
 export default useProjectStore;
