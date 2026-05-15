@@ -8,15 +8,19 @@ const {
   createProject,
   getProjectById,
   deleteProject,
-  addMember
+  addMember,
+  removeMember,
+  updateProject,
 } = require('../controllers/project.controller');
 
 const { authenticate } = require('../middleware/auth.middleware');
 
 router.get('/', authenticate, getProjects);
-router.post('/', authenticate, createProject);
 router.get('/:id', authenticate, getProjectById);
-router.delete('/:id', authenticate, deleteProject);
+router.post('/', authenticate, createProject);
 router.post('/:id/members', authenticate, addMember);
+router.delete('/:id', authenticate, deleteProject);
+router.delete('/:id/members/:memberId', authenticate, removeMember);
+router.put('/:id', authenticate, updateProject);
 
 module.exports = router;
