@@ -13,6 +13,7 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import api from "../../../services/api";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from '../../../constants/colors';
 
 export default function MembersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -64,7 +65,7 @@ export default function MembersScreen() {
   };
 
   const getRoleColor = (role: string) => {
-    return role === "ADMIN" ? "#6366f1" : "#6b7280";
+    return role === "ADMIN" ? Colors.primary : Colors.textSecondary;
   };
 
   const handleRemoveMember = (memberId: string, memberName: string) => {
@@ -95,7 +96,7 @@ export default function MembersScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>← Geri</Text>
+          <Text style={styles.backText}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Üye Yönetimi</Text>
       </View>
@@ -140,7 +141,7 @@ export default function MembersScreen() {
           disabled={isAdding}
         >
           {isAdding ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={Colors.surface} />
           ) : (
             <Text style={styles.addButtonText}>Üye Ekle</Text>
           )}
@@ -152,7 +153,7 @@ export default function MembersScreen() {
         <Text style={styles.sectionTitle}>Mevcut Üyeler</Text>
 
         {isLoading ? (
-          <ActivityIndicator color="#6366f1" />
+          <ActivityIndicator color={Colors.primary} />
         ) : (
           <FlatList
             data={members}
@@ -197,20 +198,20 @@ export default function MembersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f9fafb" },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: Colors.border,
   },
-  backText: { color: "#6366f1", fontSize: 16 },
-  title: { fontSize: 20, fontWeight: "bold", color: "#111827" },
+  backText: { color: Colors.primary, fontSize: 28 },
+  title: { fontSize: 20, fontWeight: "bold", color: Colors.textPrimary },
   form: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     margin: 16,
     borderRadius: 12,
     padding: 16,
@@ -219,12 +220,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#111827",
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#374151",
+    color: Colors.textLabel,
   },
   roleRow: { flexDirection: "row", gap: 8 },
   roleButton: {
@@ -240,26 +241,26 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     alignItems: "center",
   },
   roleButtonActive: {
-    backgroundColor: "#6366f1",
-    borderColor: "#6366f1",
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
-  roleButtonText: { fontWeight: "600", color: "#374151" },
-  roleButtonTextActive: { color: "#fff" },
+  roleButtonText: { fontWeight: "600", color: Colors.textLabel },
+  roleButtonTextActive: { color: Colors.surface },
   addButton: {
-    backgroundColor: "#6366f1",
+    backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
     alignItems: "center",
   },
   buttonDisabled: { opacity: 0.6 },
-  addButtonText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  addButtonText: { color: Colors.surface, fontWeight: "600", fontSize: 16 },
   membersSection: { paddingHorizontal: 16 },
   memberCard: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderRadius: 10,
     padding: 14,
     marginBottom: 8,
@@ -268,28 +269,28 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   memberInfo: { gap: 2 },
-  memberName: { fontSize: 15, fontWeight: "600", color: "#111827" },
-  memberEmail: { fontSize: 13, color: "#6b7280" },
+  memberName: { fontSize: 15, fontWeight: "600", color: Colors.textPrimary },
+  memberEmail: { fontSize: 13, color: Colors.textSecondary },
   roleBadge: {
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,
   },
-  roleBadgeText: { color: "#fff", fontSize: 12, fontWeight: "600" },
-  emptyText: { color: "#9ca3af", textAlign: "center", padding: 16 },
+  roleBadgeText: { color: Colors.surface, fontSize: 12, fontWeight: "600" },
+  emptyText: { color: Colors.textMuted, textAlign: "center", padding: 16 },
   memberRight: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
   },
   removeButton: {
-    backgroundColor: "#fee2e2",
+    backgroundColor: Colors.dangerLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 6,
   },
   removeText: {
-    color: "#ef4444",
+    color: Colors.danger,
     fontSize: 12,
     fontWeight: "600",
   },

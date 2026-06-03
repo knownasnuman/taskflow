@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useAuthStore from '../../store/auth.store';
 import api from '../../services/api';
+import { Colors } from '../../constants/colors';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuthStore();
@@ -80,7 +81,7 @@ export default function ProfileScreen() {
   if (isLoading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color={Colors.primary} />
       </View>
     );
   }
@@ -155,33 +156,33 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: Colors.background },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: Colors.border,
   },
-  headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#111827' },
+  headerTitle: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary },
   profileSection: {
     alignItems: 'center',
     padding: 32,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     marginBottom: 16,
   },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#6366f1',
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
-  avatarText: { color: '#fff', fontSize: 28, fontWeight: 'bold' },
-  name: { fontSize: 22, fontWeight: 'bold', color: '#111827', marginBottom: 4 },
-  email: { fontSize: 15, color: '#6b7280' },
+  avatarText: { color: Colors.surface, fontSize: 28, fontWeight: 'bold' },
+  name: { fontSize: 22, fontWeight: 'bold', color: Colors.textPrimary, marginBottom: 4 },
+  email: { fontSize: 15, color: Colors.textSecondary },
   statsSection: { padding: 16 },
   sectionTitle: {
     fontSize: 16,
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 12 },
   statCard: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -202,11 +203,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  statNumber: { fontSize: 28, fontWeight: 'bold', color: '#6366f1' },
-  statLabel: { fontSize: 13, color: '#6b7280', marginTop: 4 },
+  statNumber: { fontSize: 28, fontWeight: 'bold', color: Colors.primary },
+  statLabel: { fontSize: 13, color: Colors.textSecondary, marginTop: 4 },
   settingsSection: { padding: 16 },
   settingsCard: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -217,14 +218,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   settingLabel: { fontSize: 15, color: '#374151', fontWeight: '500' },
-  settingValue: { fontSize: 15, color: '#6b7280' },
-  divider: { height: 1, backgroundColor: '#e5e7eb', marginHorizontal: 16 },
+  settingValue: { fontSize: 15, color: Colors.textSecondary },
+  divider: { height: 1, backgroundColor: Colors.border, marginHorizontal: 16 },
   logoutButton: {
     margin: 16,
-    backgroundColor: '#fee2e2',
+    backgroundColor: Colors.dangerLight,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
-  logoutText: { color: '#ef4444', fontSize: 16, fontWeight: '600' },
+  logoutText: { color: Colors.danger, fontSize: 16, fontWeight: '600' },
 });

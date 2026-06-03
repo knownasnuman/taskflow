@@ -15,6 +15,8 @@ import {
 import { router } from 'expo-router';
 import useProjectStore from '../../../store/project.store';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../../../constants/colors";
+
 export default function CreateProjectScreen() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -48,7 +50,7 @@ const handleCreate = async () => {
       <ScrollView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>← Geri</Text>
+            <Text style={styles.backText}>‹</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Yeni Proje</Text>
         </View>
@@ -84,7 +86,7 @@ const handleCreate = async () => {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={Colors.surface} />
             ) : (
               <Text style={styles.buttonText}>Proje Oluştur</Text>
             )}
@@ -98,23 +100,23 @@ const handleCreate = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: Colors.background,
   },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: Colors.border,
     gap: 8,
   },
   backText: {
-    color: '#6366f1',
-    fontSize: 16,
+    color: Colors.primary,
+    fontSize: 28,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#111827',
+    color: Colors.textPrimary,
   },
   form: {
     padding: 16,
@@ -128,25 +130,25 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: '#111827',
+    color: Colors.textPrimary,
   },
   textArea: {
     height: 100,
   },
   charCount: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: Colors.textMuted,
     textAlign: 'right',
     marginTop: 4,
   },
   button: {
-    backgroundColor: '#6366f1',
+    backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.surface,
     fontSize: 16,
     fontWeight: '600',
   },

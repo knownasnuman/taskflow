@@ -26,10 +26,11 @@ import {
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { TaskSkeleton } from '../../../components/SkeletonCard';
+import { Colors } from '../../../constants/colors';
 
 // Görev durumları — kanban sütunları
 const COLUMNS = [
-  { key: "TODO", label: "📋 Yapılacak", color: "#e5e7eb" },
+  { key: "TODO", label: "📋 Yapılacak", color: Colors.border },
   { key: "IN_PROGRESS", label: "⚡ Devam Eden", color: "#dbeafe" },
   { key: "DONE", label: "✅ Tamamlandı", color: "#dcfce7" },
 ];
@@ -166,7 +167,7 @@ export default function ProjectDetailScreen() {
 
   // Öncelik rengi
   const getPriorityColor = (priority: string) => {
-    if (priority === "HIGH") return "#ef4444";
+    if (priority === "HIGH") return Colors.danger;
     if (priority === "MEDIUM") return "#f59e0b";
     return "#10b981";
   };
@@ -174,7 +175,7 @@ export default function ProjectDetailScreen() {
   if (isLoading && tasks.length === 0) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color={Colors.primary} />
       </View>
     );
   }
@@ -184,7 +185,7 @@ export default function ProjectDetailScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>← Geri</Text>
+          <Text style={styles.backText}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
           {currentProject?.name}
@@ -214,7 +215,7 @@ export default function ProjectDetailScreen() {
               getProjectById(id);
               getTasks(id);
             }}
-            colors={["#6366f1"]}
+            colors={[Colors.primary]}
           />
         }
       >
@@ -361,7 +362,7 @@ export default function ProjectDetailScreen() {
                   <Text
                     style={[
                       styles.priorityButtonText,
-                      newTaskPriority === p && { color: "#fff" },
+                      newTaskPriority === p && { color: Colors.surface },
                     ]}
                   >
                     {p}
@@ -399,7 +400,7 @@ export default function ProjectDetailScreen() {
                       style={[
                         styles.assigneeText,
                         newTaskAssigneeId === member.user.id && {
-                          color: "#fff",
+                          color: Colors.surface,
                         },
                       ]}
                     >
@@ -508,36 +509,36 @@ export default function ProjectDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f9fafb" },
+  container: { flex: 1, backgroundColor: Colors.background },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: Colors.border,
   },
-  backText: { color: "#6366f1", fontSize: 16 },
+  backText: { color: Colors.primary, fontSize: 16 },
   title: {
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#111827",
+    color: Colors.textPrimary,
     flex: 1,
     marginHorizontal: 8,
   },
   addButton: {
-    backgroundColor: "#6366f1",
+    backgroundColor: Colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
-  addButtonText: { color: "#fff", fontWeight: "600" },
+  addButtonText: { color: Colors.surface, fontWeight: "600" },
   board: { flexDirection: "row", padding: 16, gap: 12 },
   column: {
     width: 280,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     overflow: "hidden",
   },
@@ -547,24 +548,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 12,
   },
-  columnTitle: { fontWeight: "600", fontSize: 14, color: "#374151" },
+  columnTitle: { fontWeight: "600", fontSize: 14, color: Colors.textLabel },
   columnCount: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
     fontSize: 12,
     fontWeight: "600",
-    color: "#6b7280",
+    color: Colors.textSecondary,
   },
   columnContent: { padding: 8, maxHeight: 500 },
   taskCard: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -575,14 +576,14 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
-  taskDescription: { fontSize: 12, color: "#6b7280", marginBottom: 6 },
-  assignee: { fontSize: 11, color: "#9ca3af" },
+  taskDescription: { fontSize: 12, color: Colors.textSecondary, marginBottom: 6 },
+  assignee: { fontSize: 11, color: Colors.textMuted },
   emptyColumn: {
     textAlign: "center",
-    color: "#9ca3af",
+    color: Colors.textMuted,
     fontSize: 13,
     padding: 16,
   },
@@ -592,22 +593,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
     gap: 12,
   },
-  modalTitle: { fontSize: 20, fontWeight: "bold", color: "#111827" },
+  modalTitle: { fontSize: 20, fontWeight: "bold", color: Colors.textPrimary },
   modalLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#374151",
+    color: Colors.textLabel,
     marginTop: 4,
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
@@ -619,49 +620,49 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     alignItems: "center",
   },
-  priorityButtonText: { fontSize: 12, fontWeight: "600", color: "#374151" },
+  priorityButtonText: { fontSize: 12, fontWeight: "600", color: Colors.textLabel },
   statusRow: { gap: 8 },
   statusButton: {
     padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     alignItems: "center",
   },
-  statusButtonActive: { backgroundColor: "#6366f1", borderColor: "#6366f1" },
-  statusButtonText: { fontSize: 13, fontWeight: "600", color: "#374151" },
+  statusButtonActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
+  statusButtonText: { fontSize: 13, fontWeight: "600", color: Colors.textLabel },
   modalButtons: { flexDirection: "row", gap: 12, marginTop: 8 },
   cancelButton: {
     flex: 1,
     padding: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     alignItems: "center",
   },
-  cancelText: { color: "#374151", fontWeight: "600" },
+  cancelText: { color: Colors.textLabel, fontWeight: "600" },
   confirmButton: {
     flex: 1,
-    backgroundColor: "#6366f1",
+    backgroundColor: Colors.primary,
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  confirmText: { color: "#fff", fontWeight: "600" },
+  confirmText: { color: Colors.surface, fontWeight: "600" },
   deleteButton: {
     flex: 1,
-    backgroundColor: "#fee2e2",
+    backgroundColor: Colors.dangerLight,
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  deleteText: { color: "#ef4444", fontWeight: "600" },
-  detailDescription: { color: "#6b7280", fontSize: 14 },
+  deleteText: { color: Colors.danger, fontWeight: "600" },
+  detailDescription: { color: Colors.textSecondary, fontSize: 14 },
   membersButton: {
-    backgroundColor: "#e0e7ff",
+    backgroundColor: Colors.primaryMuted,
     padding: 8,
     borderRadius: 8,
     marginRight: 8,
@@ -669,12 +670,12 @@ const styles = StyleSheet.create({
   membersButtonText: { fontSize: 16 },
   editButton: {
     flex: 1,
-    backgroundColor: "#e0e7ff",
+    backgroundColor: Colors.primaryMuted,
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  editText: { color: "#6366f1", fontWeight: "600" },
+  editText: { color: Colors.primary, fontWeight: "600" },
   assigneeRow: {
     flexDirection: "row",
     gap: 8,
@@ -685,38 +686,38 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#fff",
+    borderColor: Colors.border,
+    backgroundColor: Colors.surface,
   },
   assigneeButtonActive: {
-    backgroundColor: "#6366f1",
-    borderColor: "#6366f1",
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   assigneeText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#374151",
+    color: Colors.textLabel,
   },
   dateButton: {
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
   },
   dateButtonText: {
     fontSize: 15,
-    color: "#374151",
+    color: Colors.textLabel,
   },
   clearDate: {
-    color: "#ef4444",
+    color: Colors.danger,
     fontSize: 13,
     textAlign: "right",
     marginTop: 4,
   },
   dueDate: {
     fontSize: 11,
-    color: "#6366f1",
+    color: Colors.primary,
     marginTop: 4,
   },
 });

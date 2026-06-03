@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import useProjectStore from '../../../store/project.store';
-
+import { Colors } from '../../../constants/colors';
 export default function EditProjectScreen() {
   const { id, name: initialName, description: initialDescription } =
     useLocalSearchParams<{
@@ -60,7 +60,7 @@ export default function EditProjectScreen() {
       <ScrollView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>← Geri</Text>
+            <Text style={styles.backText}>‹</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Projeyi Düzenle</Text>
         </View>
@@ -95,7 +95,7 @@ export default function EditProjectScreen() {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={Colors.surface} />
             ) : (
               <Text style={styles.buttonText}>Güncelle</Text>
             )}
@@ -107,47 +107,47 @@ export default function EditProjectScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: Colors.border,
     gap: 8,
   },
-  backText: { color: '#6366f1', fontSize: 16 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#111827' },
+  backText: { color: Colors.primary, fontSize: 16 },
+  title: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary },
   form: { padding: 16, gap: 4 },
   label: {
-    fontSize: 14,
+    fontSize: 28,
     fontWeight: '600',
     color: '#374151',
     marginTop: 16,
     marginBottom: 6,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: '#111827',
+    color: Colors.textPrimary,
   },
   textArea: { height: 120 },
   charCount: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: Colors.textMuted,
     textAlign: 'right',
     marginTop: 4,
   },
   button: {
-    backgroundColor: '#6366f1',
+    backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 24,
   },
   buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  buttonText: { color: Colors.surface, fontSize: 16, fontWeight: '600' },
 });

@@ -77,27 +77,40 @@ const createTask = async (
 
 //gorev guncelleme
 
-const updateTask = async (
-  taskId,
-  userId,
-  { title, description, status, priority, dueDate, assigneeId },
-) => {
+const updateTask = async (taskId, userId, { title, description, status, priority, dueDate, assigneeId }) => {
   const task = await prisma.task.findUnique({
     where: { id: taskId },
     include: {
       project: {
-        include: {
-          members: true,
-        },
-      },
-    },
+        include: { members: true }
+      }
+    }
   });
 
-  const isMember = task.project.members.some((m) => m.userId === userId);
+  if (!task) {
+    const error = new Error('Görev bulunamadı');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isMember = task.project.members.some(m => m.userId === userId);
   if (!isMember) {
-    const error = new Error("Bu göreve erişim yetkiniz yok");
+    const error = new Error('Bu göreve erişim yetkiniz yok');
     error.statusCode = 403;
     throw error;
+  }
+
+  // Sadece status değişiyorsa — atanan kişi kontrolü yap
+  if (status && status !== task.status) {
+    const isAssignee = task.assigneeId === userId;
+    const isAdmin = task.project.members.find(m => m.userId === userId)?.role === 'ADMIN';
+    const isCreator = task.createdById === userId;
+
+    if (!isAssignee && !isAdmin && !isCreator) {
+      const error = new Error('Görev durumunu sadece atanan kişi değiştirebilir');
+      error.statusCode = 403;
+      throw error;
+    }
   }
 
   const updatedTask = await prisma.task.update({
@@ -107,29 +120,26 @@ const updateTask = async (
       ...(description !== undefined && { description }),
       ...(status && { status }),
       ...(priority && { priority }),
-      ...(dueDate !== undefined && {
-        dueDate: dueDate ? new Date(dueDate) : null,
-      }),
+      ...(dueDate !== undefined && { dueDate: dueDate ? new Date(dueDate) : null }),
       ...(assigneeId !== undefined && { assigneeId }),
     },
     include: {
       assignee: {
-        select: { id: true, name: true, email: true },
+        select: { id: true, name: true, email: true }
       },
       createdBy: {
-        select: { id: true, name: true },
-      },
-    },
+        select: { id: true, name: true }
+      }
+    }
   });
 
   try {
     const io = getIO();
-    io.to(task.projectId).emit("task_updated", updatedTask);
+    io.to(task.projectId).emit('task_updated', updatedTask);
   } catch (e) {}
 
   return updatedTask;
 };
-
 //gorev sil
 
 const deleteTask = async (taskId, userId) => {

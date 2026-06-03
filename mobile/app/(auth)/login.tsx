@@ -12,6 +12,7 @@ import {
 import { router } from 'expo-router';
 import useAuthStore from '../../store/auth.store';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Colors } from '../../constants/colors';
 
 export default function LoginScreen() {
   // Local state — sadece bu ekrana ait veriler
@@ -76,7 +77,7 @@ export default function LoginScreen() {
         disabled={isLoading}
       >
         {isLoading ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color={Colors.surface} />
         ) : (
           <Text style={styles.buttonText}>Giriş Yap</Text>
         )}
@@ -97,31 +98,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.surface,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#6366f1',
+    color: Colors.primary,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6b7280',
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 32,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#6366f1',
+    backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -131,17 +132,17 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.surface,
     fontSize: 16,
     fontWeight: '600',
   },
   link: {
     textAlign: 'center',
-    color: '#6b7280',
+    color: Colors.textSecondary,
     fontSize: 14,
   },
   linkBold: {
-    color: '#6366f1',
+    color: Colors.primary,
     fontWeight: '600',
   },
 });

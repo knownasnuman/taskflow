@@ -1,7 +1,7 @@
 // mobile/components/SkeletonCard.tsx
 import { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
-
+import { Colors } from '../constants/colors';
 export function ProjectSkeleton() {
   const opacity = useRef(new Animated.Value(0.3)).current;
 
@@ -72,7 +72,7 @@ export function TaskSkeleton() {
 const styles = StyleSheet.create({
   // Project skeleton
   card: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.border,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 
   // Task skeleton
   taskCard: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,

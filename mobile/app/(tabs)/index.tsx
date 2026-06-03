@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import useAuthStore from "../../store/auth.store";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { Colors } from '../../constants/colors';
 export default function HomeScreen() {
   const { user, logout } = useAuthStore();
 
@@ -39,12 +39,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#6366f1",
+    color: Colors.primary,
     marginBottom: 8,
   },
   name: {
@@ -54,23 +54,23 @@ const styles = StyleSheet.create({
   },
   email: {
     fontSize: 16,
-    color: "#6b7280",
+    color: Colors.textSecondary,
     marginBottom: 32,
   },
   button: {
-    backgroundColor: "#ef4444",
+    backgroundColor: Colors.danger,
     padding: 14,
     borderRadius: 8,
     width: 200,
     alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
+    color: Colors.surface,
     fontSize: 16,
     fontWeight: "600",
   },
   projectsButton: {
-    backgroundColor: "#6366f1",
+    backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
     width: 200,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   profileButton: {
-  backgroundColor: '#e0e7ff',
+  backgroundColor: Colors.primaryMuted,
   padding: 14,
   borderRadius: 8,
   width: 200,

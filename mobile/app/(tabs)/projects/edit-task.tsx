@@ -15,6 +15,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import useTaskStore from "../../../store/task.store";
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Colors } from '../../../constants/colors';
 
 export default function EditTaskScreen() {
   const {
@@ -65,15 +66,15 @@ export default function EditTaskScreen() {
   }, []);
 
   const getPriorityColor = (p: string) => {
-    if (p === "HIGH") return "#ef4444";
-    if (p === "MEDIUM") return "#6366f1";
-    return "#6b7280";
+    if (p === "HIGH") return Colors.danger;
+    if (p === "MEDIUM") return Colors.primary;
+    return Colors.textSecondary;
   };
 
   const getStatusColor = (s: string) => {
     if (s === "DONE") return "#10b981";
-    if (s === "IN_PROGRESS") return "#6366f1";
-    return "#6b7280";
+    if (s === "IN_PROGRESS") return Colors.primary;
+    return Colors.textSecondary;
   };
 
   const handleUpdate = async () => {
@@ -113,7 +114,7 @@ export default function EditTaskScreen() {
       <ScrollView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>← Geri</Text>
+            <Text style={styles.backText}>‹</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Görevi Düzenle</Text>
         </View>
@@ -161,7 +162,7 @@ export default function EditTaskScreen() {
                 <Text
                   style={[
                     styles.optionText,
-                    status === s.key && { color: "#fff" },
+                    status === s.key && { color: Colors.surface },
                   ]}
                 >
                   {s.label}
@@ -187,7 +188,7 @@ export default function EditTaskScreen() {
                 <Text
                   style={[
                     styles.optionText,
-                    priority === p && { color: "#fff" },
+                    priority === p && { color: Colors.surface },
                   ]}
                 >
                   {p}
@@ -200,7 +201,7 @@ export default function EditTaskScreen() {
             style={styles.input}
             onPress={() => setShowDatePicker(true)}
           >
-            <Text style={{ color: "#374151", fontSize: 15 }}>
+            <Text style={{ color: Colors.textLabel, fontSize: 15 }}>
               {dueDate ? dueDate.toLocaleDateString("tr-TR") : "Tarih seç"}
             </Text>
           </TouchableOpacity>
@@ -230,7 +231,7 @@ export default function EditTaskScreen() {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={Colors.surface} />
             ) : (
               <Text style={styles.buttonText}>Güncelle</Text>
             )}
@@ -241,32 +242,32 @@ export default function EditTaskScreen() {
   );
 }
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f9fafb" },
+  container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: Colors.border,
     gap: 8,
   },
-  backText: { color: "#6366f1", fontSize: 16 },
-  title: { fontSize: 24, fontWeight: "bold", color: "#111827" },
+  backText: { color: Colors.primary, fontSize: 16 },
+  title: { fontSize: 24, fontWeight: "bold", color: Colors.textPrimary },
   form: { padding: 16, gap: 6 },
   label: {
-    fontSize: 14,
+    fontSize: 28,
     fontWeight: "600",
-    color: "#374151",
+    color: Colors.textLabel,
     marginTop: 16,
     marginBottom: 6,
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    color: "#111827",
+    color: Colors.textPrimary,
   },
   textArea: { height: 120 },
   optionRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
@@ -275,21 +276,21 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#fff",
+    borderColor: Colors.border,
+    backgroundColor: Colors.surface,
   },
-  optionText: { fontSize: 13, fontWeight: "600", color: "#374151" },
+  optionText: { fontSize: 13, fontWeight: "600", color: Colors.textLabel },
   button: {
-    backgroundColor: "#6366f1",
+    backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
     alignItems: "center",
     marginTop: 24,
   },
   buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+  buttonText: { color: Colors.surface, fontSize: 16, fontWeight: "600" },
   clearDate: {
-    color: "#ef4444",
+    color: Colors.danger,
     fontSize: 13,
     textAlign: "right",
     marginTop: 4,
