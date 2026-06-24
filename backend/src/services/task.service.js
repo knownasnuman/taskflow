@@ -100,14 +100,28 @@ const updateTask = async (taskId, userId, { title, description, status, priority
     throw error;
   }
 
-  // Sadece status değişiyorsa — atanan kişi kontrolü yap
-  if (status && status !== task.status) {
-    const isAssignee = task.assigneeId === userId;
-    const isAdmin = task.project.members.find(m => m.userId === userId)?.role === 'ADMIN';
-    const isCreator = task.createdById === userId;
+  const isCreator = task.createdById === userId;
+  const isAssignee = task.assigneeId === userId;
 
-    if (!isAssignee && !isAdmin && !isCreator) {
+  // Sadece durum değişiyorsa — sadece assignee yapabilir
+  const onlyStatusChange =
+    status !== undefined &&
+    title === undefined &&
+    description === undefined &&
+    priority === undefined &&
+    dueDate === undefined &&
+    assigneeId === undefined;
+
+  if (onlyStatusChange) {
+    if (!isAssignee) {
       const error = new Error('Görev durumunu sadece atanan kişi değiştirebilir');
+      error.statusCode = 403;
+      throw error;
+    }
+  } else {
+    // Diğer her şey — sadece creator değiştirebilir
+    if (!isCreator) {
+      const error = new Error('Görevi sadece oluşturan kişi düzenleyebilir');
       error.statusCode = 403;
       throw error;
     }
