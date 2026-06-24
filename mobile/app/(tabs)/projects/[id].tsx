@@ -25,8 +25,9 @@ import {
 } from "../../../services/socket";
 import api from "../../../services/api";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { TaskSkeleton } from '../../../components/SkeletonCard';
-import { Colors } from '../../../constants/colors';
+import { TaskSkeleton } from "../../../components/SkeletonCard";
+import { Colors } from "../../../constants/colors";
+import useAuthStore from "../../../store/auth.store";
 
 // Görev durumları — kanban sütunları
 const COLUMNS = [
@@ -58,6 +59,7 @@ export default function ProjectDetailScreen() {
 
   const [newTaskDueDate, setNewTaskDueDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const { user } = useAuthStore();
 
   useEffect(() => {
     if (id) {
@@ -190,6 +192,9 @@ export default function ProjectDetailScreen() {
         <Text style={styles.title} numberOfLines={1}>
           {currentProject?.name}
         </Text>
+        
+      </View>
+      <View style={styles.header1}>
         <TouchableOpacity
           style={styles.membersButton}
           onPress={() => router.push(`/(tabs)/projects/members?id=${id}`)}
@@ -446,59 +451,73 @@ export default function ProjectDetailScreen() {
               </Text>
             )}
 
-            <Text style={styles.modalLabel}>Durum Değiştir</Text>
-            <View style={styles.statusRow}>
-              {COLUMNS.map((col) => (
-                <TouchableOpacity
-                  key={col.key}
-                  style={[
-                    styles.statusButton,
-                    selectedTask?.status === col.key &&
-                      styles.statusButtonActive,
-                  ]}
-                  onPress={() => {
-                    handleStatusChange(selectedTask.id, col.key);
-                    setSelectedTask({ ...selectedTask, status: col.key });
-                  }}
-                >
-                  <Text style={styles.statusButtonText}>{col.label}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {selectedTask?.assignee?.id === user?.id ? (
+              <>
+                <Text style={styles.modalLabel}>Durum Değiştir</Text>
+                <View style={styles.statusRow}>
+                  {COLUMNS.map((col) => (
+                    <TouchableOpacity
+                      key={col.key}
+                      style={[
+                        styles.statusButton,
+                        selectedTask?.status === col.key &&
+                          styles.statusButtonActive,
+                      ]}
+                      onPress={() => {
+                        handleStatusChange(selectedTask.id, col.key);
+                        setSelectedTask({ ...selectedTask, status: col.key });
+                      }}
+                    >
+                      <Text style={styles.statusButtonText}>{col.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </>
+            ) : (
+              <Text style={styles.noPermissionText}>
+                Durumu sadece atanan kişi değiştirebilir
+              </Text>
+            )}
 
             <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => handleDeleteTask(selectedTask?.id)}
-              >
-                <Text style={styles.deleteText}>Sil</Text>
-              </TouchableOpacity>
+              {selectedTask?.createdBy?.id === user?.id && (
+                <>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => {
+                      setDetailModalVisible(false);
+                      router.push({
+                        pathname: "/(tabs)/projects/edit-task",
+                        params: {
+                          projectId: id,
+                          taskId: selectedTask.id,
+                          title: selectedTask.title,
+                          description: selectedTask.description || "",
+                          priority: selectedTask.priority,
+                          status: selectedTask.status,
+                          assigneeId: selectedTask.assignee?.id || "",
+                          dueDate: selectedTask.dueDate || "",
+                        },
+                      });
+                    }}
+                  >
+                    <Text style={styles.editText}>Düzenle</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteTask(selectedTask?.id)}
+                  >
+                    <Text style={styles.deleteText}>Sil</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={() => setDetailModalVisible(false)}
               >
                 <Text style={styles.cancelText}>Kapat</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => {
-                  setDetailModalVisible(false);
-                  router.push({
-                    pathname: "/(tabs)/projects/edit-task",
-                    params: {
-                      projectId: id,
-                      taskId: selectedTask.id,
-                      title: selectedTask.title,
-                      description: selectedTask.description || "",
-                      priority: selectedTask.priority,
-                      status: selectedTask.status,
-                      assigneeId: selectedTask.assignee?.id || "",
-                      dueDate: selectedTask.dueDate || "",
-                    },
-                  });
-                }}
-              >
-                <Text style={styles.editText}>Düzenle</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -509,6 +528,12 @@ export default function ProjectDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  noPermissionText: {
+  color: Colors.textMuted,
+  fontSize: 13,
+  fontStyle: 'italic',
+  paddingVertical: 8,
+  },
   container: { flex: 1, backgroundColor: Colors.background },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   header: {
@@ -520,13 +545,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
+  header1: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 16,
+    backgroundColor: Colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
   backText: { color: Colors.primary, fontSize: 16 },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
     color: Colors.textPrimary,
     flex: 1,
     marginHorizontal: 8,
+    textAlign: "center",
   },
   addButton: {
     backgroundColor: Colors.primary,
@@ -579,7 +614,11 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     marginBottom: 4,
   },
-  taskDescription: { fontSize: 12, color: Colors.textSecondary, marginBottom: 6 },
+  taskDescription: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    marginBottom: 6,
+  },
   assignee: { fontSize: 11, color: Colors.textMuted },
   emptyColumn: {
     textAlign: "center",
@@ -623,7 +662,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     alignItems: "center",
   },
-  priorityButtonText: { fontSize: 12, fontWeight: "600", color: Colors.textLabel },
+  priorityButtonText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: Colors.textLabel,
+  },
   statusRow: { gap: 8 },
   statusButton: {
     padding: 10,
@@ -632,8 +675,15 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     alignItems: "center",
   },
-  statusButtonActive: { backgroundColor: Colors.primary, borderColor: Colors.primary },
-  statusButtonText: { fontSize: 13, fontWeight: "600", color: Colors.textLabel },
+  statusButtonActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  statusButtonText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: Colors.textLabel,
+  },
   modalButtons: { flexDirection: "row", gap: 12, marginTop: 8 },
   cancelButton: {
     flex: 1,

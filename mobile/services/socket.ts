@@ -10,8 +10,14 @@ export const connectSocket = async () => {
 
   if (!token) return;
 
-  if (socket?.connected) return;
-
+  if (socket?.connected || socket?.active) 
+    return socket;
+  
+  if (socket) {
+    socket.removeAllListeners();
+    socket.disconnect();
+    socket = null;
+  }
   socket = io(BASE_URL, {
     auth: { token },        
     transports: ['websocket'], 
