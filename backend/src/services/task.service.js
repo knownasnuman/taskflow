@@ -1,5 +1,6 @@
 const prisma = require("../lib/prisma");
 const { getIO } = require("../sockets/socket");
+const { sendTaskAssignedNotification } = require('./notification.service');
 
 //gorev listesi
 
@@ -53,7 +54,7 @@ const createTask = async (
     throw error;
   }
 
-  return await prisma.task.create({
+  const task = await prisma.task.create({
     data: {
       title,
       description,
@@ -66,13 +67,27 @@ const createTask = async (
     },
     include: {
       assignee: {
-        select: { id: true, name: true, email: true },
+        select: { id: true, name: true, email: true, pushToken: true },
       },
       createdBy: {
         select: { id: true, name: true },
       },
+      project: {
+        select: { name: true },
+      },
     },
   });
+
+  // Atanan kişiye bildirim gönder (kendine atamadıysa)
+  if (task.assignee && task.assignee.id !== userId && task.assignee.pushToken) {
+    sendTaskAssignedNotification(
+      task.assignee.pushToken,
+      task.title,
+      task.project.name
+    );
+  }
+
+  return task;
 };
 
 //gorev guncelleme
@@ -146,6 +161,22 @@ const updateTask = async (taskId, userId, { title, description, status, priority
       }
     }
   });
+
+  // Assignee değiştiyse ve yeni assignee varsa bildirim gönder
+  if (assigneeId && assigneeId !== task.assigneeId && assigneeId !== userId) {
+    const newAssignee = await prisma.user.findUnique({
+      where: { id: assigneeId },
+      select: { pushToken: true }
+    });
+
+    if (newAssignee?.pushToken) {
+      sendTaskAssignedNotification(
+        newAssignee.pushToken,
+        updatedTask.title,
+        task.project.name
+      );
+    }
+  }
 
   try {
     const io = getIO();

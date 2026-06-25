@@ -34,6 +34,13 @@ const refreshToken = async (token) => {
   }
 };
 
+const updatePushToken = async (userId, pushToken) => {
+  return await prisma.user.update({
+    where: { id: userId },
+    data: { pushToken }
+  });
+};
+
 //REGISTER
 
 const register = async ({name, email, password}) => {
@@ -111,7 +118,7 @@ const login = async ({email, password}) => {
     };
 };
 
-module.exports = { register, login, refreshToken };
+module.exports = { register, login, refreshToken, updatePushToken };
 
 
 

@@ -119,4 +119,22 @@ const refresh = async (req, res) => {
   }
 };
 
-module.exports = { register, login, me, refresh };
+const updatePushToken = async (req, res) => {
+  try {
+    const { pushToken } = req.body;
+
+    if (!pushToken) {
+      return res.status(400).json({ error: 'Push token zorunludur' });
+    }
+
+    await authService.updatePushToken(req.user.userId, pushToken);
+
+    return res.status(200).json({ message: 'Push token kaydedildi' });
+
+  } catch (error) {
+    console.error('updatePushToken hatası:', error);
+    return res.status(500).json({ error: 'Sunucu hatası' });
+  }
+};
+
+module.exports = { register, login, me, refresh, updatePushToken };
