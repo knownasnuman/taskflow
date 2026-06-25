@@ -186,15 +186,9 @@ export default function ProjectDetailScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>‹</Text>
-        </TouchableOpacity>
         <Text style={styles.title} numberOfLines={1}>
           {currentProject?.name}
         </Text>
-        
-      </View>
-      <View style={styles.header1}>
         <TouchableOpacity
           style={styles.membersButton}
           onPress={() => router.push(`/(tabs)/projects/members?id=${id}`)}
@@ -545,15 +539,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
   },
-  header1: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: 16,
-    backgroundColor: Colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
   backText: { color: Colors.primary, fontSize: 16 },
   title: {
     fontSize: 24,
@@ -561,7 +546,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     flex: 1,
     marginHorizontal: 8,
-    textAlign: "center",
+    textAlign: "left",
   },
   addButton: {
     backgroundColor: Colors.primary,

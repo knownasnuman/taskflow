@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import useAuthStore from '../store/auth.store';
+import { registerForPushNotificationsAsync, savePushToken } from '../services/notifications';
 
 export default function RootLayout() {
-  const { loadToken } = useAuthStore();
+  const { isAuthenticated, loadToken } = useAuthStore();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -13,6 +14,17 @@ export default function RootLayout() {
     };
     init();
   }, []);
+
+  // Kullanıcı giriş yapınca push token al ve kaydet
+  useEffect(() => {
+    if (isAuthenticated) {
+      registerForPushNotificationsAsync().then((token) => {
+        if (token) {
+          savePushToken(token);
+        }
+      });
+    }
+  }, [isAuthenticated]);
 
   if (!isReady) return null;
 

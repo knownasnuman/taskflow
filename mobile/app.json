@@ -1,33 +1,47 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "TaskFlow",
     "slug": "mobile",
     "scheme": "taskflow",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/taskflowlogo1.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/taskflowlogo1.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FAFAF7"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/taskflowlogo1.png",
+        "backgroundColor": "#FAFAF7"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/taskflowlogo1.png"
     },
     "plugins": [
       "expo-secure-store",
-      "expo-router"
-    ]
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/taskflowlogo1.png",
+          "color": "#B8960C"
+        }
+      ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "41eb2a6a-e022-4c5f-a780-c260347b5c0e"
+      }
+    },
+    "owner": "numankotan"
   }
 }

@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import useAuthStore from '../../store/auth.store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/colors';
+import { Image } from 'react-native';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -52,7 +53,11 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView  style={styles.container}>
-      <Text style={styles.title}>TaskFlow</Text>
+      <Image
+        source={require('../../assets/taskflowlogo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
       <Text style={styles.subtitle}>Yeni hesap oluştur</Text>
 
       <TextInput
@@ -159,5 +164,11 @@ const styles = StyleSheet.create({
   linkBold: {
     color: Colors.primary,
     fontWeight: '600',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginBottom: 26,
   },
 });

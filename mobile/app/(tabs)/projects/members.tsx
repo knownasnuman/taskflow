@@ -95,9 +95,6 @@ export default function MembersScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>‹</Text>
-        </TouchableOpacity>
         <Text style={styles.title}>Üye Yönetimi</Text>
       </View>
 

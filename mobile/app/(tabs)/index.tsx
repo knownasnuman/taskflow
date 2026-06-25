@@ -3,12 +3,19 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import useAuthStore from "../../store/auth.store";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from '../../constants/colors';
+import { Colors } from "../../constants/colors";
+import { Image } from "react-native";
+
 export default function HomeScreen() {
   const { user, logout } = useAuthStore();
 
   return (
     <SafeAreaView style={styles.container}>
+      <Image
+        source={require("../../assets/taskflowlogo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
       <Text style={styles.title}>Hoş geldin!</Text>
       <Text style={styles.name}>{user?.name}</Text>
       <Text style={styles.email}>{user?.email}</Text>
@@ -17,14 +24,14 @@ export default function HomeScreen() {
         style={styles.profileButton}
         onPress={() => router.push("/(tabs)/profile")}
       >
-        <Text style={styles.buttonText}>Profil →</Text>
+        <Text style={styles.buttonText}>Profil</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.projectsButton}
         onPress={() => router.push("/(tabs)/projects")}
       >
-        <Text style={styles.buttonText}>Projelere Git →</Text>
+        <Text style={styles.buttonText}>Projelerim</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={logout}>
@@ -51,6 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     marginBottom: 4,
+    textTransform: "uppercase",
   },
   email: {
     fontSize: 16,
@@ -78,11 +86,17 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   profileButton: {
-  backgroundColor: Colors.primaryMuted,
-  padding: 14,
-  borderRadius: 8,
-  width: 200,
-  alignItems: 'center',
-  marginBottom: 12,
-},
+    backgroundColor: Colors.primary,
+    padding: 14,
+    borderRadius: 8,
+    width: 200,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+   logo: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginBottom: 26,
+  },
 });

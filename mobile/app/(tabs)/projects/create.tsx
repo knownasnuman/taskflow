@@ -1,5 +1,5 @@
 // mobile/app/(tabs)/projects/create.tsx
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -11,89 +11,89 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from 'react-native';
-import { router } from 'expo-router';
-import useProjectStore from '../../../store/project.store';
+} from "react-native";
+import { router } from "expo-router";
+import useProjectStore from "../../../store/project.store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 
 export default function CreateProjectScreen() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const { createProject, isLoading } = useProjectStore();
 
-const handleCreate = async () => {
-  if (!name.trim()) {
-    Alert.alert('Hata', 'Proje adı zorunludur');
-    return;
-  }
+  const handleCreate = async () => {
+    if (!name.trim()) {
+      Alert.alert("Hata", "Proje adı zorunludur");
+      return;
+    }
 
-  try {
-    await createProject(name.trim(), description.trim() || undefined);
-    // router.back() yerine direkt yönlendir
-    router.push('/(tabs)/projects');
-  } catch (error: any) {
-    console.log('Create project error:', JSON.stringify(error.response?.data));
-    console.log('Error message:', error.message);
-    const message = error.response?.data?.error || 'Proje oluşturulamadı';
-    Alert.alert('Hata', message);
-  }
-};
+    try {
+      await createProject(name.trim(), description.trim() || undefined);
+      // router.back() yerine direkt yönlendir
+      router.push("/(tabs)/projects");
+    } catch (error: any) {
+      console.log(
+        "Create project error:",
+        JSON.stringify(error.response?.data),
+      );
+      console.log("Error message:", error.message);
+      const message = error.response?.data?.error || "Proje oluşturulamadı";
+      Alert.alert("Hata", message);
+    }
+  };
 
   return (
-    // KeyboardAvoidingView — klavye açılınca input'lar yukarı kayar
-    // Platform.OS — iOS ve Android farklı davranır
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>‹</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Yeni Proje</Text>
-        </View>
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Yeni Proje</Text>
+          </View>
 
-        <View style={styles.form}>
-          <Text style={styles.label}>Proje Adı *</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="örn. TaskFlow Mobile"
-            value={name}
-            onChangeText={setName}
-            maxLength={50}
-          />
-          <Text style={styles.charCount}>{name.length}/50</Text>
+          <View style={styles.form}>
+            <Text style={styles.label}>Proje Adı *</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="örn. TaskFlow Mobile"
+              value={name}
+              onChangeText={setName}
+              maxLength={50}
+            />
+            <Text style={styles.charCount}>{name.length}/50</Text>
 
-          <Text style={styles.label}>Açıklama</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Proje hakkında kısa bir açıklama..."
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            // Birden fazla satır
-            numberOfLines={4}
-            maxLength={200}
-            textAlignVertical="top"
-          />
-          <Text style={styles.charCount}>{description.length}/200</Text>
+            <Text style={styles.label}>Açıklama</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Proje hakkında kısa bir açıklama..."
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              // Birden fazla satır
+              numberOfLines={4}
+              maxLength={200}
+              textAlignVertical="top"
+            />
+            <Text style={styles.charCount}>{description.length}/200</Text>
 
-          <TouchableOpacity
-            style={[styles.button, isLoading && styles.buttonDisabled]}
-            onPress={handleCreate}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={Colors.surface} />
-            ) : (
-              <Text style={styles.buttonText}>Proje Oluştur</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity
+              style={[styles.button, isLoading && styles.buttonDisabled]}
+              onPress={handleCreate}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={Colors.surface} />
+              ) : (
+                <Text style={styles.buttonText}>Proje Oluştur</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.textPrimary,
   },
   form: {
@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginTop: 16,
     marginBottom: 6,
   },
@@ -144,14 +144,14 @@ const styles = StyleSheet.create({
   charCount: {
     fontSize: 12,
     color: Colors.textMuted,
-    textAlign: 'right',
+    textAlign: "right",
     marginTop: 4,
   },
   button: {
     backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 24,
   },
   buttonDisabled: {
@@ -160,6 +160,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.surface,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

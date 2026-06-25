@@ -1,5 +1,5 @@
 // mobile/app/(auth)/login.tsx
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,17 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
-} from 'react-native';
-import { router } from 'expo-router';
-import useAuthStore from '../../store/auth.store';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors } from '../../constants/colors';
+} from "react-native";
+import { router } from "expo-router";
+import useAuthStore from "../../store/auth.store";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../../constants/colors";
+import { Image } from "react-native";
 
 export default function LoginScreen() {
   // Local state — sadece bu ekrana ait veriler
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Store'dan ihtiyacımız olanları alıyoruz
   const { login, isLoading } = useAuthStore();
@@ -25,7 +26,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     // Basit validasyon
     if (!email || !password) {
-      Alert.alert('Hata', 'Email ve şifre zorunludur');
+      Alert.alert("Hata", "Email ve şifre zorunludur");
       return;
     }
 
@@ -36,18 +37,21 @@ export default function LoginScreen() {
 
       // Giriş başarılı → ana sayfaya yönlendir.
       // replace → geri tuşuyla login'e dönemesin.
-      router.replace('/(tabs)');
-
+      router.replace("/(tabs)");
     } catch (error: any) {
       // Axios hata nesnesinden mesajı çıkarıyoruz.
-      const message = error.response?.data?.error || 'Bir hata oluştu';
-      Alert.alert('Giriş Başarısız', message);
+      const message = error.response?.data?.error || "Bir hata oluştu";
+      Alert.alert("Giriş Başarısız", message);
     }
   };
 
   return (
-    <SafeAreaView  style={styles.container}>
-      <Text style={styles.title}>TaskFlow</Text>
+    <SafeAreaView style={styles.container}>
+      <Image
+        source={require("../../assets/taskflowlogo.png")}
+        style={styles.logo}
+        resizeMode="contain"
+      />
       <Text style={styles.subtitle}>Hesabına giriş yap</Text>
 
       <TextInput
@@ -84,7 +88,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       {/* Register'a yönlendirme */}
-      <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+      <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
         <Text style={styles.link}>
           Hesabın yok mu? <Text style={styles.linkBold}>Kayıt ol</Text>
         </Text>
@@ -96,21 +100,21 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 24,
     backgroundColor: Colors.surface,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.primary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: Colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 32,
   },
   input: {
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 16,
   },
   buttonDisabled: {
@@ -134,15 +138,21 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.surface,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   link: {
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.textSecondary,
     fontSize: 14,
   },
   linkBold: {
     color: Colors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginBottom: 26,
   },
 });

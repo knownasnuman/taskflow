@@ -113,9 +113,6 @@ export default function EditTaskScreen() {
     >
       <ScrollView style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>‹</Text>
-          </TouchableOpacity>
           <Text style={styles.title}>Görevi Düzenle</Text>
         </View>
 

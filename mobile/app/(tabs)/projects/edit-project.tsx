@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   View,
   Text,
@@ -10,27 +10,31 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import useProjectStore from '../../../store/project.store';
-import { Colors } from '../../../constants/colors';
+} from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import useProjectStore from "../../../store/project.store";
+import { Colors } from "../../../constants/colors";
+import { SafeAreaView } from 'react-native-safe-area-context';
 export default function EditProjectScreen() {
-  const { id, name: initialName, description: initialDescription } =
-    useLocalSearchParams<{
-      id: string;
-      name: string;
-      description: string;
-    }>();
+  const {
+    id,
+    name: initialName,
+    description: initialDescription,
+  } = useLocalSearchParams<{
+    id: string;
+    name: string;
+    description: string;
+  }>();
 
-  const [name, setName] = useState(initialName || '');
-  const [description, setDescription] = useState(initialDescription || '');
+  const [name, setName] = useState(initialName || "");
+  const [description, setDescription] = useState(initialDescription || "");
   const [isLoading, setIsLoading] = useState(false);
 
   const { updateProject } = useProjectStore();
 
   const handleUpdate = async () => {
     if (!name.trim()) {
-      Alert.alert('Hata', 'Proje adı zorunludur');
+      Alert.alert("Hata", "Proje adı zorunludur");
       return;
     }
 
@@ -41,68 +45,67 @@ export default function EditProjectScreen() {
         description: description.trim() || undefined,
       });
 
-      Alert.alert('Başarılı', 'Proje güncellendi', [
-        { text: 'Tamam', onPress: () => router.back() }
+      Alert.alert("Başarılı", "Proje güncellendi", [
+        { text: "Tamam", onPress: () => router.back() },
       ]);
     } catch (error: any) {
-      const message = error.response?.data?.error || 'Proje güncellenemedi';
-      Alert.alert('Hata', message);
+      const message = error.response?.data?.error || "Proje güncellenemedi";
+      Alert.alert("Hata", message);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backText}>‹</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Projeyi Düzenle</Text>
-        </View>
+    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Projeyi Düzenle</Text>
+          </View>
 
-        <View style={styles.form}>
-          <Text style={styles.label}>Proje Adı *</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder="Proje adı"
-            maxLength={50}
-          />
-          <Text style={styles.charCount}>{name.length}/50</Text>
+          <View style={styles.form}>
+            <Text style={styles.label}>Proje Adı *</Text>
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              placeholder="Proje adı"
+              maxLength={50}
+            />
+            <Text style={styles.charCount}>{name.length}/50</Text>
 
-          <Text style={styles.label}>Açıklama</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Açıklama (opsiyonel)"
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-            maxLength={200}
-          />
-          <Text style={styles.charCount}>{description.length}/200</Text>
+            <Text style={styles.label}>Açıklama</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Açıklama (opsiyonel)"
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              maxLength={200}
+            />
+            <Text style={styles.charCount}>{description.length}/200</Text>
 
-          <TouchableOpacity
-            style={[styles.button, isLoading && styles.buttonDisabled]}
-            onPress={handleUpdate}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={Colors.surface} />
-            ) : (
-              <Text style={styles.buttonText}>Güncelle</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity
+              style={[styles.button, isLoading && styles.buttonDisabled]}
+              onPress={handleUpdate}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={Colors.surface} />
+              ) : (
+                <Text style={styles.buttonText}>Güncelle</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -116,12 +119,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   backText: { color: Colors.primary, fontSize: 16 },
-  title: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary },
+  title: { fontSize: 24, fontWeight: "bold", color: Colors.textPrimary },
   form: { padding: 16, gap: 4 },
   label: {
     fontSize: 28,
-    fontWeight: '600',
-    color: '#374151',
+    fontWeight: "600",
+    color: "#374151",
     marginTop: 16,
     marginBottom: 6,
   },
@@ -138,16 +141,16 @@ const styles = StyleSheet.create({
   charCount: {
     fontSize: 12,
     color: Colors.textMuted,
-    textAlign: 'right',
+    textAlign: "right",
     marginTop: 4,
   },
   button: {
     backgroundColor: Colors.primary,
     padding: 14,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 24,
   },
   buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: Colors.surface, fontSize: 16, fontWeight: '600' },
+  buttonText: { color: Colors.surface, fontSize: 16, fontWeight: "600" },
 });
