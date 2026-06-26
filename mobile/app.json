@@ -36,7 +36,9 @@
           "icon": "./assets/taskflowlogo1.png",
           "color": "#B8960C"
         }
-      ]
+      ],
+      "expo-font",
+      "@react-native-community/datetimepicker"
     ],
     "extra": {
       "router": {},
