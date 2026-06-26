@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const BASE_URL = "http://192.168.1.52:3000";
+const BASE_URL = 'https://taskflow-production-6afd.up.railway.app';
 
 const api = axios.create({
   baseURL: BASE_URL,
